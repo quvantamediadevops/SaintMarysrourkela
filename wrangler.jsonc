@@ -1,8 +1,13 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "saint-marys-school",
+  "name": "saintmarysrourkela",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
+  // Wrangler runs this before every `wrangler deploy` / `wrangler dev`, so
+  // ./out always exists — even when the Cloudflare dashboard has no build command.
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
     // Output of `next build` (static export)
     "directory": "./out",

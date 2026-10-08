@@ -8,7 +8,7 @@ npm install
 npm run dev        # http://localhost:3000 — design/content work (enquiry form shows "not active")
 npm run build      # static export → ./out
 npm run preview    # build + run the real Cloudflare runtime locally (http://localhost:8787)
-npm run cf:check   # validate wrangler.jsonc without deploying
+npm run cf:check   # build + validate the deployment without uploading
 npm run deploy     # build + deploy with Wrangler
 npm run lint       # type-check
 ```
@@ -24,13 +24,19 @@ feature — the contact enquiry form — is handled by `worker/index.ts` at `POS
 delivery webhook stays a server-side secret. `wrangler.jsonc` serves `./out` and runs the Worker only
 for `/api/*`; all pages are served straight from Cloudflare’s edge.
 
+**Build before deploy is guaranteed.** `wrangler.jsonc` contains `"build": { "command": "npm run build" }`,
+so every `wrangler deploy` / `wrangler dev` builds `./out` first — even if the Cloudflare dashboard
+has no build command. (Without it, `npx wrangler deploy` fails with
+“The directory specified by the assets.directory field … does not exist”.)
+
 ### Option A — Git integration (Workers Builds, recommended)
 
-Cloudflare dashboard → **Workers & Pages → Create → Import a repository**, then:
+Worker **saintmarysrourkela** (the `name` in `wrangler.jsonc` must match it) → **Settings → Build**:
 
 | Setting | Value |
 | --- | --- |
-| Build command | `npm run build` |
+| Git repository | `quvantamediadevops/SaintMarysrourkela`, production branch `main` |
+| Build command | *(leave empty — `wrangler deploy` builds)* or `npm run build` (harmless, just builds twice) |
 | Deploy command | `npx wrangler deploy` |
 | Root directory | `/` |
 | Build variable | `NEXT_PUBLIC_SITE_URL` = your live URL, e.g. `https://www.your-domain.in` |
