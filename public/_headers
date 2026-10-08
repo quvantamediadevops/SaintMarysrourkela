@@ -1,0 +1,20 @@
+# Cloudflare static asset headers (copied to out/_headers by `next build`).
+# Deliberately conservative: no script/style CSP that could break Next.js,
+# fonts, images, forms, Instagram links or a future Google Maps embed.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
+
+# Fingerprinted build output — safe to cache forever
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Photos and social image — cache, but allow replacement
+/images/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/og-image.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
